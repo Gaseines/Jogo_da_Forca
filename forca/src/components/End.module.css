@@ -1,0 +1,10 @@
+.score{
+    font-weight: bolder;
+    color: #b1fc8b;
+}
+
+.word{
+    text-transform: uppercase;
+    font-weight: bolder;
+    color: #fc8b8b;
+}

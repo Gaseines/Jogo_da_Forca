@@ -19,7 +19,7 @@ function App() {
   const [stage, setStage] = useState("start");
   const [pickedWord, setPickedWord] = useState("");
   const [pickedCategory, setPickedCategory] = useState("");
-  const [letters, setLetters] = useState([]);
+  const [letters, setLetters] = useState(["a"]);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [errLetters, setErrLetters] = useState([]);
   const [guesses, setGuesses] = useState(qtdTentativas);
@@ -28,7 +28,7 @@ function App() {
   const [words] = useState(wordsList);
 
   //Pick a category and word
-  const PickCategoryAndWord = () => {
+  const PickCategoryAndWord = useCallback(() => {
     //Pick categories
     const categories = Object.keys(words);
     //Pick a random category
@@ -40,10 +40,10 @@ function App() {
       words[category][Math.floor(Math.random() * Object.keys(category).length)];
 
     return { word, category };
-  };
+  },[words]);
 
   //Start the game
-  const StartGame = () => {
+  const StartGame = useCallback(() => {
     //Select random category
     const { word, category } = PickCategoryAndWord();
 
@@ -52,15 +52,19 @@ function App() {
     //Letras minusculas
     wordLetters = wordLetters.map((l) => l.toUpperCase());
 
-    console.log(word, category, wordLetters);
+    // console.log(word, category, wordLetters); se quiser ver no console a resposta
     setPickedCategory(category);
     setPickedWord(word);
     setLetters(wordLetters);
     setStage("game");
-  };
+  }, [PickCategoryAndWord]);
 
+  //Vrifica a Letra enviada
   const VerifyLetter = (letter) => {
 
+    if(guessedLetters.includes(letter) || errLetters.includes(letter)){
+      return;
+    }
     //Inclui as letras certas e erradas ao array
     if (letters.includes(letter)) {
       setGuessedLetters((actualGuessedLetters) => [
@@ -81,6 +85,27 @@ function App() {
     setGuessedLetters([])
   }
 
+  //Win condition
+  useEffect(() => {
+    const uniqueLetters = [...new Set(letters)]
+
+    if(guessedLetters.length === uniqueLetters.length ){
+      //Add 100 to score
+      setScore((actualScore) => actualScore += 100)
+
+      //Reset tha Letters
+      StartGame()
+
+      //Clear states
+      clearLetterStates()
+      setGuesses(qtdTentativas)
+
+      console.log("Acertou")
+    }
+
+  }, [guessedLetters, letters, StartGame, qtdTentativas])
+
+  //Lose condition
   useEffect(() => {
     if(guesses === 0){
       //Muda o stage da pagina para o fim de jogo
@@ -91,7 +116,7 @@ function App() {
     }
   }, [guesses])
 
-  console.log(guesses);
+  
 
   const Restart = () => {
     setStage("start");
@@ -114,7 +139,7 @@ function App() {
           score={score}
         />
       )}
-      {stage === "end" && <End Restart={Restart} />}
+      {stage === "end" && <End Restart={Restart} score={score} word={pickedWord}/>}
     </div>
   );
 }

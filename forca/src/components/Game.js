@@ -12,46 +12,53 @@ const Game = ({
   guesses,
   score,
 }) => {
+  const headRef = useRef(null);
+  const bodyRef = useRef(null);
+  const arm1Ref = useRef(null);
+  const arm2Ref = useRef(null);
+  const leg1Ref = useRef(null);
+  const leg2Ref = useRef(null);
 
-  const headRef = useRef(null)
-  const bodyRef = useRef(null)
-  const arm1Ref = useRef(null)
-  const arm2Ref = useRef(null)
-  const leg1Ref = useRef(null)
-  const leg2Ref = useRef(null)
+  const [letter, setLetter] = useState("");
+  const inputRef = useRef(null);
 
-  const [letter, setLetter] = useState("")
-  const inputRef = useRef(null)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const l = letter.toUpperCase();
+    VerifyLetter(l);
+    setLetter("");
 
-  const handleSubmit = (e) =>{
-    e.preventDefault()
-    const l = letter.toUpperCase()
-    VerifyLetter(l)
-    setLetter("")
-
-    inputRef.current.focus()
-  }
+    inputRef.current.focus();
+  };
 
   useEffect(() => {
-    if(guesses === 6){
-      headRef.current.style.display = "block"
+    if (guesses === 7) {
+      headRef.current.style.display = "none";
+      bodyRef.current.style.display = "none";
+      arm1Ref.current.style.display = "none";
+      arm2Ref.current.style.display = "none";
+      leg1Ref.current.style.display = "none";
+      leg2Ref.current.style.display = "none";
     }
-    if(guesses === 5){
-      bodyRef.current.style.display = "block"
+    if (guesses === 6) {
+      headRef.current.style.display = "block";
     }
-    if(guesses === 4){
-      arm1Ref.current.style.display = "block"
+    if (guesses === 5) {
+      bodyRef.current.style.display = "block";
     }
-    if(guesses === 3){
-      arm2Ref.current.style.display = "block"
+    if (guesses === 4) {
+      arm1Ref.current.style.display = "block";
     }
-    if(guesses === 2){
-      leg1Ref.current.style.display = "block"
+    if (guesses === 3) {
+      arm2Ref.current.style.display = "block";
     }
-    if(guesses === 1){
-      leg2Ref.current.style.display = "block"
+    if (guesses === 2) {
+      leg1Ref.current.style.display = "block";
     }
-  }, [guesses])
+    if (guesses === 1) {
+      leg2Ref.current.style.display = "block";
+    }
+  }, [guesses]);
 
   return (
     <div className={`container ${styles.game}`}>
@@ -86,12 +93,13 @@ const Game = ({
             <span key={i} className={styles.letter}>
               {letter}
             </span>
-          ) :letter === ' ' ?(
-            <span className={styles.letter}>-</span>
-          ): (
-            <span className={styles.box_blank}></span>
+          ) : letter === " " ? (
+            <span key={i} className={styles.letter}>
+              -
+            </span>
+          ) : (
+            <span key={i} className={styles.box_blank}></span>
           )
-          
         )}
       </div>
 
