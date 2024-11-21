@@ -86,7 +86,9 @@ const Game = ({
             <span key={i} className={styles.letter}>
               {letter}
             </span>
-          ) : (
+          ) :letter === ' ' ?(
+            <span className={styles.letter}>-</span>
+          ): (
             <span className={styles.box_blank}></span>
           )
           
