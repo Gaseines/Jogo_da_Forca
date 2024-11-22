@@ -22,6 +22,7 @@ function App() {
   const [letters, setLetters] = useState(["a"]);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [errLetters, setErrLetters] = useState([]);
+  const [correctWord, setCorrectWord] = useState([])
   const [guesses, setGuesses] = useState(qtdTentativas);
   const [score, setScore] = useState(0);
 
@@ -44,6 +45,11 @@ function App() {
 
   //Start the game
   const StartGame = useCallback(() => {
+    //Confere word
+    if(correctWord.includes(pickedWord)){
+      return;
+    }
+
     //Select random category
     const { word, category } = PickCategoryAndWord();
 
@@ -57,7 +63,7 @@ function App() {
     setPickedWord(word);
     setLetters(wordLetters);
     setStage("game");
-  }, [PickCategoryAndWord]);
+  }, [PickCategoryAndWord, pickedWord, correctWord]);
 
   //Vrifica a Letra enviada
   const VerifyLetter = (letter) => {
@@ -90,6 +96,12 @@ function App() {
     const uniqueLetters = [...new Set(letters)]
 
     if(guessedLetters.length === uniqueLetters.length ){
+      //add Correct Word
+      setCorrectWord((actualCorrectWords) => [
+        ...actualCorrectWords,
+        pickedWord,
+      ])
+
       //Add 100 to score
       setScore((actualScore) => actualScore += 100)
 
@@ -102,8 +114,8 @@ function App() {
 
       console.log("Acertou")
     }
-
-  }, [guessedLetters, letters, StartGame, qtdTentativas])
+    console.log(correctWord)
+  }, [guessedLetters, letters, StartGame, qtdTentativas, pickedWord])
 
   //Lose condition
   useEffect(() => {
